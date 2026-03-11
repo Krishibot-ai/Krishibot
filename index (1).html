@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#16a34a"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="KrishiBot"/>
+  <meta name="description" content="KrishiBot - आपका डिजिटल कृषि मित्र"/>
+  <title>🌾 KrishiBot - कृषि मित्र</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans Devanagari','Segoe UI',sans-serif;background:linear-gradient(160deg,#071a07 0%,#0d2a0d 60%,#091909 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;}
+    #installBanner{position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(135deg,#14532d,#166534);border-bottom:1px solid rgba(34,197,94,0.3);padding:10px 16px;display:none;align-items:center;gap:10px;}
+    #installBanner.show{display:flex}
+    .ib-text{flex:1}.ib-title{color:#fff;font-weight:700;font-size:13px}.ib-sub{color:#86efac;font-size:11px}
+    #installBtn{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:20px;padding:6px 14px;color:#fff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+    #closeBanner{background:none;border:none;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0;}
+    #app{width:100%;max-width:430px;border-radius:28px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.7),0 0 0 1px rgba(34,197,94,0.2);display:flex;flex-direction:column;height:92vh;max-height:800px;background:#0a1a0a;transition:margin-top 0.3s;}
+    .header{background:linear-gradient(135deg,#14532d,#166534);padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(34,197,94,0.2);flex-shrink:0;}
+    #backBtn{background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:34px;height:34px;color:#fff;cursor:pointer;font-size:18px;display:none;align-items:center;justify-content:center;flex-shrink:0;}
+    #backBtn.show{display:flex}
+    .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 18px rgba(34,197,94,0.5);flex-shrink:0;}
+    .header-info{flex:1}.header-name{color:#fff;font-weight:700;font-size:16px}
+    .header-status{display:flex;align-items:center;gap:5px;margin-top:2px}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;animation:pulse 2s infinite;}
+    .status-text{color:#86efac;font-size:11px}
+    #headerInstall{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:6px 12px;color:#fff;font-weight:700;font-size:11px;cursor:pointer;font-family:inherit;flex-shrink:0;}
+    #menuScreen{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px}
+    #menuScreen.hide{display:none}
+    .welcome-card{background:linear-gradient(135deg,rgba(34,197,94,0.13),rgba(34,197,94,0.04));border:1px solid rgba(34,197,94,0.22);border-radius:20px;padding:20px 16px;text-align:center;}
+    .welcome-emoji{font-size:40px;margin-bottom:8px}.welcome-title{color:#fff;font-weight:700;font-size:19px;margin-bottom:5px}.welcome-sub{color:#86efac;font-size:13px;line-height:1.7}
+    .install-card{margin-top:12px;background:rgba(34,197,94,0.08);border:1px dashed rgba(34,197,94,0.4);border-radius:14px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;}
+    .ic-text{flex:1;text-align:left}.ic-title{color:#fff;font-weight:700;font-size:12px}.ic-sub{color:#86efac;font-size:11px;margin-top:2px}
+    .menu-label{color:#4ade80;font-size:12px;font-weight:700;letter-spacing:.8px}
+    .options-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .option-btn{border-radius:16px;padding:14px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.5px solid;transition:all .2s;font-family:inherit;}
+    .option-emoji{font-size:26px}.option-label{color:#e8f5e9;font-size:10.5px;font-weight:700;text-align:center;line-height:1.3}.option-desc{color:rgba(134,239,172,0.55);font-size:9.5px;text-align:center}
+    .free-type{background:rgba(255,255,255,0.03);border:1px solid rgba(34,197,94,0.12);border-radius:16px;padding:14px;}
+    .free-type-label{color:#86efac;font-size:12px;font-weight:600;margin-bottom:8px}.free-type-row{display:flex;gap:8px}
+    #menuInput{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:10px 16px;color:#e8f5e9;font-size:13px;outline:none;font-family:inherit;}
+    #menuSendBtn{width:40px;height:40px;border-radius:50%;background:rgba(34,197,94,0.15);border:none;cursor:pointer;font-size:16px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
+    #menuSendBtn.active{background:linear-gradient(135deg,#22c55e,#16a34a)}
+    #chatScreen{flex:1;overflow-y:auto;padding:16px;display:none;flex-direction:column;gap:12px}
+    #chatScreen.show{display:flex}
+    .date-label{text-align:center}
+    .date-badge{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.15);color:#86efac;font-size:11px;padding:4px 12px;border-radius:20px;display:inline-block;}
+    .msg-wrap{display:flex;align-items:flex-end;gap:8px}.msg-wrap.user{justify-content:flex-end}
+    .msg-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+    .msg-bubble{max-width:80%;padding:10px 14px;font-size:13.5px;line-height:1.65;color:#e8f5e9;}
+    .bot-bubble{background:rgba(255,255,255,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:18px 18px 18px 4px;}
+    .user-bubble{background:linear-gradient(135deg,#15803d,#16a34a);border-radius:18px 18px 4px 18px;}
+    .msg-time{color:rgba(134,239,172,0.5);font-size:10px;margin-top:5px;text-align:right}
+    .typing-wrap{display:flex;align-items:flex-end;gap:8px}
+    .typing-bubble{background:rgba(255,255,255,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:5px;align-items:center;}
+    .typing-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;}
+    .typing-dot:nth-child(1){animation:bounce 1.2s 0s infinite}
+    .typing-dot:nth-child(2){animation:bounce 1.2s .2s infinite}
+    .typing-dot:nth-child(3){animation:bounce 1.2s .4s infinite}
+    #chipsRow{padding:8px 14px 4px;background:#0a1a0a;border-top:1px solid rgba(34,197,94,0.08);display:none;overflow-x:auto;gap:7px;}
+    #chipsRow.show{display:flex}
+    .chip{flex-shrink:0;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:16px;padding:5px 12px;color:#86efac;font-size:11px;cursor:pointer;white-space:nowrap;font-family:inherit;}
+    #inputRow{padding:8px 14px 14px;background:#0a1a0a;display:none;gap:8px;align-items:center;}
+    #inputRow.show{display:flex}
+    #chatInput{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:22px;padding:11px 16px;color:#e8f5e9;font-size:13.5px;outline:none;font-family:inherit;}
+    #sendBtn{width:42px;height:42px;border-radius:50%;background:rgba(34,197,94,0.15);border:none;cursor:pointer;font-size:17px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+    #sendBtn.active{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 14px rgba(34,197,94,0.35);}
+    #iosModal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:flex-end;justify-content:center;z-index:1000;padding:0 16px 16px;}
+    #iosModal.show{display:flex}
+    #iosGuide{background:#0d2a0d;border:1px solid rgba(34,197,94,0.3);border-radius:24px;padding:28px 24px;width:100%;max-width:420px;}
+    .ios-step{display:flex;gap:14px;align-items:flex-start;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:14px;margin-bottom:10px;}
+    .ios-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0;}
+    .ios-title{color:#fff;font-weight:700;font-size:14px}.ios-sub{color:#86efac;font-size:12px;margin-top:3px}
+    #iosClose{width:100%;padding:14px;background:linear-gradient(135deg,#22c55e,#16a34a);border:none;border-radius:14px;color:#fff;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;margin-top:6px;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(34,197,94,0.25);border-radius:4px}
+  </style>
+</head>
+<body>
+
+<div id="iosModal">
+  <div id="iosGuide">
+    <div style="text-align:center;font-size:40px">📱</div>
+    <h3 style="color:#fff;font-weight:800;font-size:18px;text-align:center;margin:12px 0 4px">iPhone पर Install करो</h3>
+    <p style="color:#86efac;font-size:13px;text-align:center;margin-bottom:20px">Home Screen पर App जैसा लगाओ</p>
+    <div class="ios-step"><div class="ios-num">1</div><div><div class="ios-title">⬆️ Safari Share button दबाओ</div><div class="ios-sub">नीचे बीच में — ऊपर arrow वाला</div></div></div>
+    <div class="ios-step"><div class="ios-num">2</div><div><div class="ios-title">📋 "Add to Home Screen" चुनो</div><div class="ios-sub">नीचे Scroll करो — मिल जाएगा</div></div></div>
+    <div class="ios-step"><div class="ios-num">3</div><div><div class="ios-title">✅ "Add" दबाओ</div><div class="ios-sub">KrishiBot का Icon Home Screen पर!</div></div></div>
+    <button id="iosClose">समझ गए ✓</button>
+  </div>
+</div>
+
+<div id="installBanner">
+  <span style="font-size:22px">📲</span>
+  <div class="ib-text"><div class="ib-title">KrishiBot को App बनाओ!</div><div class="ib-sub">Home Screen पर लगाओ — बिना Browser खोले चलेगा</div></div>
+  <button id="installBtn">Install करो</button>
+  <button id="closeBanner">✕</button>
+</div>
+
+<div id="app">
+  <div class="header">
+    <button id="backBtn">←</button>
+    <div class="avatar">🌾</div>
+    <div class="header-info">
+      <div class="header-name">KrishiBot</div>
+      <div class="header-status"><div class="status-dot"></div><span class="status-text" id="statusText">कृषि विशेषज्ञ AI • ऑनलाइन</span></div>
+    </div>
+    <button id="headerInstall">📲 Install</button>
+  </div>
+
+  <div id="menuScreen">
+    <div class="welcome-card">
+      <div class="welcome-emoji">👨‍🌾</div>
+      <div class="welcome-title">नमस्ते किसान भाई!</div>
+      <div class="welcome-sub">आपका डिजिटल कृषि मित्र<br/><strong style="color:#4ade80">नीचे से विषय चुनें 👇</strong></div>
+      <div class="install-card" id="installCard">
+        <span style="font-size:22px">📲</span>
+        <div class="ic-text"><div class="ic-title">Home Screen पर App बनाओ!</div><div class="ic-sub">एक बार Install करो — हमेशा आसानी से खुलेगा ✨</div></div>
+        <span style="color:#4ade80;font-size:18px">›</span>
+      </div>
+    </div>
+    <div class="menu-label">📋 क्या जानना है आपको?</div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="free-type">
+      <div class="free-type-label">✍️ या सीधे अपनी समस्या लिखो:</div>
+      <div class="free-type-row">
+        <input id="menuInput" placeholder="यहाँ लिखो..." type="text"/>
+        <button id="menuSendBtn">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chatScreen">
+    <div class="date-label"><span class="date-badge" id="dateLabel"></span></div>
+  </div>
+
+  <div id="chipsRow"></div>
+  <div id="inputRow">
+    <input id="chatInput" placeholder="यहाँ लिखो..." type="text"/>
+    <button id="sendBtn">➤</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//   यहाँ अपनी Google Gemini API Key डालो
+//   aistudio.google.com से Free मिलेगी
+// ══════════════════════════════════════
+const API_KEY = "APNI_KEY_YAHAN_LIKHO";//👈 SIRF ANDAR KI VALUE BADLO
+// ══════════════════════════════════════
+
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+const SYSTEM_MSG = `Tu ek expert Indian agricultural assistant hai jiska naam KrishiBot hai.
+Tu SIRF Hindi mein jawab deta hai.
+In topics par help karta hai: fasal ki bimari, keetnashak, mandi bhav, khad, sinchai, beej, sarkari yojana.
+Rules: 100-150 words mein jawab do. Simple Hindi. 🌾 emoji use karo. Practical solution do. Ant mein "💡 Tip:" zaroor likho.`;
+
+const OPTIONS = [
+  {icon:"🌿",label:"फसल की बीमारी",desc:"रोग पहचानें",color:"#16a34a",msg:"मेरी फसल में बीमारी के लक्षण हैं, मदद करो"},
+  {icon:"🌦️",label:"मौसम सलाह",desc:"आज क्या करें",color:"#0369a1",msg:"मौसम के हिसाब से आज खेती में क्या करूँ?"},
+  {icon:"💊",label:"दवाई पूछो",desc:"सही दवाई जानें",color:"#7c3aed",msg:"फसल के लिए कौन सी दवाई सही रहेगी?"},
+  {icon:"💰",label:"मंडी भाव",desc:"आज के दाम",color:"#b45309",msg:"आज मंडी में फसल के क्या भाव हैं?"},
+  {icon:"🧪",label:"खाद जानकारी",desc:"उर्वरक सलाह",color:"#0f766e",msg:"मेरी फसल के लिए कौन सी खाद डालूँ?"},
+  {icon:"🐛",label:"कीट समस्या",desc:"कीड़े भगाएं",color:"#b91c1c",msg:"मेरी फसल में कीड़े लग गए हैं, क्या करूँ?"},
+  {icon:"🌱",label:"बीज जानकारी",desc:"अच्छे बीज चुनें",color:"#15803d",msg:"इस मौसम के लिए कौन सा बीज सबसे अच्छा है?"},
+  {icon:"💧",label:"सिंचाई सलाह",desc:"पानी कब दें",color:"#1d4ed8",msg:"फसल में कब और कितना पानी देना चाहिए?"},
+  {icon:"📋",label:"सरकारी योजना",desc:"मदद पाएं",color:"#9d174d",msg:"किसानों के लिए कौन सी सरकारी योजनाएं हैं?"},
+];
+const CHIPS = ["और बताओ","दवाई का नाम","कहाँ मिलेगी","कितना खर्च","🏠 मेनू"];
+
+let messages = [];
+let loading = false;
+let installPrompt = null;
+let isInstalled = false;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+const $ = id => document.getElementById(id);
+const menuScreen=$('menuScreen'), chatScreen=$('chatScreen'), chipsRow=$('chipsRow');
+const inputRow=$('inputRow'), chatInput=$('chatInput'), sendBtn=$('sendBtn');
+const menuInput=$('menuInput'), menuSendBtn=$('menuSendBtn'), backBtn=$('backBtn');
+const statusText=$('statusText'), installBanner=$('installBanner');
+const app=$('app'), dateLabel=$('dateLabel');
+
+dateLabel.textContent = 'आज • ' + new Date().toLocaleDateString('hi-IN');
+
+// Build grid
+const grid = $('optionsGrid');
+OPTIONS.forEach(opt => {
+  const btn = document.createElement('button');
+  btn.className = 'option-btn';
+  btn.style.cssText = `background:linear-gradient(145deg,${opt.color}25,${opt.color}0f);border-color:${opt.color}40`;
+  btn.innerHTML = `<span class="option-emoji">${opt.icon}</span><span class="option-label">${opt.label}</span><span class="option-desc">${opt.desc}</span>`;
+  btn.onclick = () => startChat(opt.label, opt.msg);
+  btn.onmouseenter = () => { btn.style.background=`linear-gradient(145deg,${opt.color}45,${opt.color}22)`;btn.style.transform='translateY(-3px)'; };
+  btn.onmouseleave = () => { btn.style.background=`linear-gradient(145deg,${opt.color}25,${opt.color}0f)`;btn.style.transform=''; };
+  grid.appendChild(btn);
+});
+
+// Build chips
+CHIPS.forEach(chip => {
+  const c = document.createElement('button');
+  c.className='chip'; c.textContent=chip;
+  c.onclick = () => chip==='🏠 मेनू' ? showMenu() : sendMessage(chip);
+  chipsRow.appendChild(c);
+});
+
+// PWA
+if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
+  isInstalled=true; $('headerInstall').style.display='none'; $('installCard').style.display='none';
+}
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); installPrompt=e;
+  if(!isInstalled){ installBanner.classList.add('show'); app.style.marginTop='56px'; }
+});
+window.addEventListener('appinstalled',()=>{ isInstalled=true; installBanner.classList.remove('show'); app.style.marginTop='0'; $('headerInstall').style.display='none'; $('installCard').style.display='none'; });
+if(isIOS && !window.navigator.standalone){ setTimeout(()=>{ installBanner.classList.add('show'); app.style.marginTop='56px'; },3000); $('installBtn').textContent='कैसे करें?'; }
+
+function handleInstall(){
+  if(isIOS){ $('iosModal').classList.add('show'); return; }
+  if(installPrompt){ installPrompt.prompt(); installPrompt.userChoice.then(r=>{ if(r.outcome==='accepted'){isInstalled=true;installBanner.classList.remove('show');app.style.marginTop='0';} }); }
+}
+$('installBtn').onclick = handleInstall;
+$('headerInstall').onclick = handleInstall;
+$('installCard').onclick = handleInstall;
+$('closeBanner').onclick = () => { installBanner.classList.remove('show'); app.style.marginTop='0'; };
+$('iosClose').onclick = () => $('iosModal').classList.remove('show');
+
+// Screens
+function showChat(topic){
+  menuScreen.classList.add('hide');
+  chatScreen.classList.add('show');
+  chipsRow.classList.add('show');
+  inputRow.classList.add('show');
+  backBtn.classList.add('show');
+  if(topic) statusText.textContent = topic;
+}
+function showMenu(){
+  menuScreen.classList.remove('hide');
+  chatScreen.classList.remove('show');
+  chipsRow.classList.remove('show');
+  inputRow.classList.remove('show');
+  backBtn.classList.remove('show');
+  statusText.textContent = 'कृषि विशेषज्ञ AI • ऑनलाइन';
+  messages = [];
+  [...chatScreen.children].slice(1).forEach(k=>k.remove());
+}
+backBtn.onclick = showMenu;
+
+function getTime(){ return new Date().toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'}); }
+
+function addMsg(role, text){
+  const w=document.createElement('div');
+  w.className='msg-wrap'+(role==='user'?' user':'');
+  const h=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br/>');
+  w.innerHTML = role==='assistant'
+    ? `<div class="msg-avatar">🌾</div><div class="msg-bubble bot-bubble"><div>${h}</div><div class="msg-time">${getTime()}</div></div>`
+    : `<div class="msg-bubble user-bubble"><div>${h}</div><div class="msg-time">${getTime()} ✓✓</div></div>`;
+  chatScreen.appendChild(w);
+  chatScreen.scrollTop=chatScreen.scrollHeight;
+}
+function showTyping(){
+  const w=document.createElement('div'); w.className='typing-wrap'; w.id='td';
+  w.innerHTML=`<div class="msg-avatar">🌾</div><div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  chatScreen.appendChild(w); chatScreen.scrollTop=chatScreen.scrollHeight;
+}
+function hideTyping(){ const t=$('td'); if(t)t.remove(); }
+
+// ══════════════════════════════
+//  Gemini API Call
+// ══════════════════════════════
+async function callAI(userText){
+  if(loading) return;
+  loading=true; sendBtn.textContent='⏳'; sendBtn.classList.remove('active');
+  messages.push({role:'user', parts:[{text:userText}]});
+  addMsg('user', userText);
+  showTyping();
+  try {
+    const body = {
+      contents: [
+        {role:'user', parts:[{text:SYSTEM_MSG}]},
+        {role:'model', parts:[{text:'समझ गया! मैं KrishiBot हूँ। 🌾 Hindi में मदद करूँगा।'}]},
+        ...messages
+      ],
+      generationConfig:{ temperature:0.7, maxOutputTokens:512 }
+    };
+    const res = await fetch(GEMINI_URL,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const data = await res.json();
+    if(data.error){
+      hideTyping();
+      const msg = data.error.code===400 ? '⚠️ API Key गलत है। index.html में सही Gemini Key डालो।' : '⚠️ Error: '+data.error.message;
+      addMsg('assistant', msg);
+    } else {
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '⚠️ जवाब नहीं मिला।';
+      messages.push({role:'model', parts:[{text:reply}]});
+      hideTyping(); addMsg('assistant', reply);
+    }
+  } catch(e){ hideTyping(); addMsg('assistant','⚠️ Internet की समस्या है। दोबारा कोशिश करो।'); }
+  loading=false; sendBtn.textContent='➤'; updBtn();
+}
+
+async function startChat(topic, msg){ showChat(topic); await callAI(msg); }
+function sendMessage(text){
+  const m=text||chatInput.value.trim(); if(!m||loading)return;
+  chatInput.value=''; updBtn(); callAI(m);
+}
+chatInput.addEventListener('input', updBtn);
+chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter')sendMessage(); });
+sendBtn.onclick = ()=>sendMessage();
+menuInput.addEventListener('input',()=>{ menuSendBtn.classList.toggle('active',menuInput.value.trim().length>0); });
+menuInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&menuInput.value.trim()){const t=menuInput.value.trim();menuInput.value='';showChat('सीधा सवाल');callAI(t);} });
+menuSendBtn.onclick=()=>{ if(menuInput.value.trim()){const t=menuInput.value.trim();menuInput.value='';showChat('सीधा सवाल');callAI(t);} };
+function updBtn(){ sendBtn.classList.toggle('active',chatInput.value.trim().length>0&&!loading); }
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script>
+</body>
+</html>
